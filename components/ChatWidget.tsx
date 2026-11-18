@@ -2,6 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { CSSProperties, FormEvent } from "react";
 
 const CONTACT_EMAIL = "mjamijami46@gmail.com";
 const MAX_SENT = 10;
@@ -16,7 +17,14 @@ const SUGGESTIONS = [
   "How can I contact Jamee?",
 ];
 
-const PALETTES = {
+type ChatTheme = "dark" | "light";
+type ChatMessage = {
+  role: "user" | "model" | "error";
+  text: string;
+};
+type Palette = CSSProperties & Record<`--${string}`, string>;
+
+const PALETTES: Record<ChatTheme, Palette> = {
   dark: {
     "--c-bg": "#101b2e",
     "--c-surface": "#16243b",
@@ -42,18 +50,18 @@ const PALETTES = {
   },
 };
 
-export default function ChatWidget({ theme = "dark" }) {
+export default function ChatWidget({ theme = "dark" }: { theme?: ChatTheme }) {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const listRef = useRef(null);
-  const inputRef = useRef(null);
-  const abortRef = useRef(null);
-  const sendRef = useRef(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const sendRef = useRef<((question: string) => void) | null>(null);
   const loadingRef = useRef(false);
-  const pendingAskRef = useRef(null);
+  const pendingAskRef = useRef<string | null>(null);
 
   const ring =
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-[color:var(--c-accent)]";
@@ -85,8 +93,8 @@ export default function ChatWidget({ theme = "dark" }) {
 
   // Handle questions from AskChips.
   useEffect(() => {
-    const onAsk = (event) => {
-      const question = event.detail;
+    const onAsk = (event: Event) => {
+      const question = (event as CustomEvent<unknown>).detail;
 
       if (typeof question !== "string" || !question.trim()) {
         return;
@@ -143,11 +151,11 @@ export default function ChatWidget({ theme = "dark" }) {
     }
   }, []);
 
-  const replaceLast = (next) => {
+  const replaceLast = (next: ChatMessage) => {
     setMessages((prev) => [...prev.slice(0, -1), next]);
   };
 
-  const send = useCallback(async (raw) => {
+  const send = useCallback(async (raw: string): Promise<void> => {
     const text = String(raw).trim();
 
     if (!text || loadingRef.current) return;
@@ -238,8 +246,8 @@ export default function ChatWidget({ theme = "dark" }) {
           text: answer,
         });
       }
-    } catch (err) {
-      if (err?.name === "AbortError") return;
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === "AbortError") return;
 
       replaceLast({
         role: "error",
@@ -265,13 +273,13 @@ export default function ChatWidget({ theme = "dark" }) {
     sendRef.current = send;
   }, [send]);
 
-  function onSubmit(event) {
+  function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     send(input);
   }
 
   return (
-    <div style={PALETTES[theme] || PALETTES.dark}>
+    <div style={PALETTES[theme]}>
       {open && (
         <div
           role="dialog"
