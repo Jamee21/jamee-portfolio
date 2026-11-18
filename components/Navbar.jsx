@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { name: "About", href: "#about" },
-  { name: "Expertise", href: "#expertise" },
+  { name: "Services", href: "#expertise" },
   { name: "Skills", href: "#skills" },
   { name: "Process", href: "#process" },
   { name: "Experience", href: "#experience" },
@@ -12,83 +12,105 @@ const navItems = [
   { name: "Contact", href: "#contact" },
 ];
 
+const focus =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]";
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
 
-  const closeMenu = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-
-        {/* Logo */}
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-[color:var(--line)] bg-[#0a1220]/85 backdrop-blur-md">
+      <nav aria-label="Main" className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <a
           href="#home"
-          onClick={closeMenu}
-          className="text-lg font-bold tracking-[0.2em] text-white transition hover:text-gray-300"
+          onClick={close}
+          className={`rounded font-semibold tracking-tight text-[color:var(--text)] ${focus}`}
         >
-          JAMEE
+          Jamee Raza
         </a>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-7 lg:flex">
+        {/* Desktop */}
+        <div className="hidden items-center gap-6 lg:flex">
           {navItems.map((item) => (
             <a
               key={item.name}
               href={item.href}
-              className="relative text-sm text-gray-400 transition duration-300 hover:text-white"
+              className={`rounded text-sm text-[color:var(--muted)] transition hover:text-[color:var(--text)] ${focus}`}
             >
               {item.name}
             </a>
           ))}
 
           <a
-            href="#contact"
-            className="ml-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-black transition duration-300 hover:-translate-y-0.5 hover:bg-gray-200"
+            href="#chat"
+            className={`rounded-lg border border-[color:var(--line)] px-4 py-2 text-sm font-medium text-[color:var(--text)] transition hover:border-[color:var(--accent)] ${focus}`}
           >
-            Let's Talk
+            Ask AI
+          </a>
+          <a
+            href="#contact"
+            className={`rounded-lg bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[color:var(--accent-ink)] transition hover:brightness-110 ${focus}`}
+          >
+            Let&rsquo;s talk
           </a>
         </div>
 
-        {/* Mobile Button */}
+        {/* Mobile toggle */}
         <button
+          type="button"
           onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-          className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white transition hover:bg-white/10 lg:hidden"
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          className={`flex h-10 w-10 items-center justify-center rounded-lg border border-[color:var(--line)] text-[color:var(--text)] lg:hidden ${focus}`}
         >
-          <span className="text-xl">
-            {open ? "×" : "☰"}
-          </span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+          </svg>
         </button>
-      </div>
+      </nav>
 
-      {/* Mobile Navigation */}
+      {/* Mobile menu */}
       {open && (
-        <div className="border-t border-white/10 bg-black px-6 py-5 lg:hidden">
-          <div className="flex flex-col gap-1">
+        <div id="mobile-menu" className="border-t border-[color:var(--line)] bg-[var(--bg)] px-6 py-4 lg:hidden">
+          <div className="flex flex-col">
             {navItems.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                onClick={closeMenu}
-                className="rounded-xl px-4 py-3 text-gray-400 transition hover:bg-white/5 hover:text-white"
+                onClick={close}
+                className={`rounded-lg px-3 py-3 text-[color:var(--muted)] transition hover:bg-[var(--raised)] hover:text-[color:var(--text)] ${focus}`}
               >
                 {item.name}
               </a>
             ))}
-
-            <a
-              href="#contact"
-              onClick={closeMenu}
-              className="mt-3 rounded-full bg-white px-5 py-3 text-center font-medium text-black"
-            >
-              Let's Talk
-            </a>
+            <div className="mt-3 flex gap-3">
+              <a
+                href="#chat"
+                onClick={close}
+                className={`flex-1 rounded-lg border border-[color:var(--line)] px-4 py-3 text-center font-medium ${focus}`}
+              >
+                Ask AI
+              </a>
+              <a
+                href="#contact"
+                onClick={close}
+                className={`flex-1 rounded-lg bg-[var(--accent)] px-4 py-3 text-center font-semibold text-[color:var(--accent-ink)] ${focus}`}
+              >
+                Let&rsquo;s talk
+              </a>
+            </div>
           </div>
         </div>
       )}
-    </nav>
+    </header>
   );
 }

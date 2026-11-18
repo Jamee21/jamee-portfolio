@@ -1,110 +1,111 @@
 import Reveal from "./Reveal";
 
+// Wording follows the resume. Edit dates, bullets or tags here when they change.
 const experiences = [
   {
-    number: "01",
     role: "Front-End Developer",
     company: "360 Expert Solution",
-    location: "Karachi · On-site",
-    description:
-      "Developed responsive web interfaces with a focus on clean layouts, cross-browser compatibility and dynamic user interfaces.",
+    place: "Karachi, on-site",
+    period: "Apr 2025 to Jun 2025",
     work: [
-      "Built responsive web interfaces",
-      "Worked on dynamic UI components",
-      "Fixed bugs and styling issues",
-      "Improved cross-browser compatibility",
+      "Developed responsive web interfaces and dynamic UI components, with attention to cross-browser compatibility.",
+      "Fixed layout issues and refined front-end styling to improve usability and visual consistency.",
     ],
+    tags: ["Responsive UI", "Dynamic components", "Cross-browser", "Styling"],
   },
   {
-    number: "02",
-    role: "Web Developer & Quality Checker",
+    role: "Web Developer and Quality Checker",
     company: "Cosmic 365 AI",
-    location: "Remote",
-    description:
-      "Worked on Wix-based layouts, data analysis and quality checking to improve website consistency and usability.",
+    place: "Remote",
+    period: "2025",
     work: [
-      "Created and adjusted Wix layouts",
-      "Performed website quality checks",
-      "Analyzed website data",
-      "Identified UI and functionality issues",
+      "Customized responsive client-facing web layouts using Wix and supported data analysis tasks.",
+      "Performed quality checks on web features for visual consistency and functional accuracy.",
     ],
+    tags: ["Wix", "Quality checks", "Data analysis"],
   },
 ];
 
 export default function Experience() {
   return (
-    <section
-      id="experience"
-      className="bg-black px-6 py-24 text-white"
-    >
-      <div className="mx-auto max-w-7xl">
-
+    <section id="experience" className="bg-[var(--bg)] px-6 py-24 sm:py-28">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
-          <div className="mb-16">
-            <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gray-500">
+          <div className="max-w-3xl">
+            <p className="text-sm font-medium uppercase tracking-widest text-[color:var(--accent)]">
               Experience
             </p>
-
-            <h2 className="text-4xl font-bold tracking-tight sm:text-6xl">
+            <h2 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
               Where I have worked.
             </h2>
+            <p className="mt-5 text-lg leading-8 text-[color:var(--muted)]">
+              Hands-on work on real client websites, from interface to quality checks.
+            </p>
           </div>
         </Reveal>
 
-        <div className="space-y-6">
-          {experiences.map((experience) => (
-            <Reveal key={experience.number}>
-              <div className="group rounded-3xl border border-white/10 bg-white/[0.03] p-7 transition duration-500 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.05] md:p-10">
+        <ol className="mt-14 border-l border-[color:var(--line)]">
+          {experiences.map((job) => (
+            <li key={job.company} className="relative pb-10 pl-8 last:pb-0 sm:pl-12">
+              {/* Timeline dot with a soft ring */}
+              <span
+                aria-hidden="true"
+                className="absolute -left-[9px] top-7 flex h-[17px] w-[17px] items-center justify-center rounded-full border border-[color:var(--accent)] bg-[var(--bg)]"
+              >
+                <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
+              </span>
 
-                <div className="grid gap-8 lg:grid-cols-[180px_1fr_1fr]">
+              <Reveal>
+                <article className="group relative overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--raised)] p-7 transition duration-300 hover:border-[color:var(--accent)] motion-safe:hover:-translate-y-1 motion-reduce:transition-none sm:p-8">
+                  {/* Soft accent glow on hover */}
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[var(--accent)] opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-10"
+                  />
 
-                  {/* Number */}
-                  <div>
-                    <span className="text-sm tracking-widest text-gray-600">
-                      {experience.number}
-                    </span>
+                  <div className="relative flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-2xl font-semibold tracking-tight">{job.role}</h3>
+                      <p className="mt-1 text-[color:var(--muted)]">
+                        <span className="font-medium text-[color:var(--text)]">{job.company}</span>
+                        , {job.place}
+                      </p>
+                    </div>
+                    <p className="rounded-full border border-[color:var(--line)] bg-[var(--bg)] px-3 py-1 text-sm text-[color:var(--muted)]">
+                      {job.period}
+                    </p>
                   </div>
 
-                  {/* Role */}
-                  <div>
-                    <h3 className="text-2xl font-semibold">
-                      {experience.role}
-                    </h3>
+                  <ul className="relative mt-6 max-w-2xl space-y-3">
+                    {job.work.map((item) => (
+                      <li key={item} className="flex gap-3 leading-7 text-[color:var(--muted)]">
+                        <span
+                          aria-hidden="true"
+                          className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]"
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
 
-                    <p className="mt-2 text-gray-300">
-                      {experience.company}
-                    </p>
-
-                    <p className="mt-1 text-sm text-gray-600">
-                      {experience.location}
-                    </p>
-                  </div>
-
-                  {/* Details */}
-                  <div>
-                    <p className="leading-7 text-gray-400">
-                      {experience.description}
-                    </p>
-
-                    <ul className="mt-5 space-y-2">
-                      {experience.work.map((item) => (
-                        <li
-                          key={item}
-                          className="flex items-start gap-3 text-sm text-gray-500"
-                        >
-                          <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-gray-500" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                </div>
-              </div>
-            </Reveal>
+                  <ul
+                    className="relative mt-6 flex flex-wrap gap-2"
+                    aria-label={`${job.role}: focus areas`}
+                  >
+                    {job.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-md border border-[color:var(--line)] bg-[var(--bg)] px-3 py-1.5 text-sm text-[color:var(--muted)]"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              </Reveal>
+            </li>
           ))}
-        </div>
-
+        </ol>
       </div>
     </section>
   );

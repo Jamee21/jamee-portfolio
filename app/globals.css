@@ -1,45 +1,109 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Design tokens
+   Every color on the site comes from here. Change one value, the whole site
+   follows. All text/background pairs below were checked for WCAG AA (4.5:1).
+   ========================================================================== */
+:root {
+  /* Dark surfaces: deep sea ink */
+  --bg: #0a1220;
+  --raised: #101b2e;
+  --line: #1f2e47;
+
+  /* Text on dark (contrast on --bg: 16.1, 8.0, 5.1) */
+  --text: #e9eef6;
+  --muted: #9baac1;
+  --faint: #7486a1;
+
+  /* The single accent: sea glass */
+  --accent: #5ce0d0;
+  --accent-ink: #04201c; /* text on top of the accent (10.6:1) */
+
+  /* Light band used by the Projects section */
+  --paper: #e9eff6;
+  --ink: #0a1220;
+  --ink-muted: #4a5b75; /* 6.9:1 on white, 6.0:1 on paper */
+  --accent-deep: #0a6c63; /* teal for links and labels on light surfaces */
+
+  /* Scrollbar */
+  --scroll-thumb: #26385a;
+  --scroll-thumb-hover: #35507d;
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem; /* keeps section titles clear of the fixed navbar */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--scroll-thumb) var(--bg);
 }
 
 body {
   margin: 0;
-  background: #000;
-  color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  text-wrap: balance; /* avoids a lonely last word in headings */
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
-  background: white;
-  color: black;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 
-/* Scrollbar */
+/* Visible keyboard focus everywhere. Components can override with their own ring. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Scrollbar (Chrome, Edge, Safari)
+   ========================================================================== */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--scroll-thumb);
   border-radius: 999px;
+  border: 2px solid var(--bg); /* thinner look without losing the grab area */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--scroll-thumb-hover);
 }
 
-/* Reveal animation */
+/* ==========================================================================
+   Animation helper (kept from your old file in case something still uses it)
+   ========================================================================== */
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(35px);
+    transform: translateY(16px);
   }
 
   to {
@@ -49,35 +113,12 @@ body {
 }
 
 .animate-fade-up {
-  animation: fadeUp 0.8s ease-out both;
+  animation: fadeUp 0.6s ease-out both;
 }
 
-/* Smooth cards */
-.project-card {
-  transition:
-    transform 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 20px 50px rgba(255, 255, 255, 0.06);
-}
-
-/* Mobile */
-@media (max-width: 640px) {
-  html {
-    scroll-padding-top: 80px;
-  }
-
-  section {
-    scroll-margin-top: 80px;
-  }
-}
-
-/* Accessibility */
+/* ==========================================================================
+   Accessibility: respect "reduce motion"
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -87,6 +128,7 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

@@ -1,174 +1,174 @@
 import Reveal from "./Reveal";
 
-const expertise = [
+const focus =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]";
+
+/* Simple inline icons. Decorative only, so they are hidden from screen readers. */
+const icons = {
+  fullstack: (
+    <path d="M12 3 3 8l9 5 9-5-9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" />
+  ),
+  frontend: (
+    <>
+      <rect x="3" y="4" width="18" height="13" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+    </>
+  ),
+  api: (
+    <>
+      <ellipse cx="12" cy="6" rx="8" ry="3" />
+      <path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6" />
+    </>
+  ),
+  ai: (
+    <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3Zm7 11 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14ZM5 15l.7 1.6L7.3 17l-1.6.7L5 19.3l-.7-1.6L2.7 17l1.6-.4L5 15Z" />
+  ),
+};
+
+const services = [
   {
-    number: "01",
-    title: "Full-Stack Development",
-    short: "Complete digital products",
+    title: "Full-stack web applications",
     description:
-      "Building complete web applications by connecting modern frontend interfaces with reliable backend services, APIs and databases.",
+      "Complete applications that connect a React or Next.js interface to a Node.js backend and a database.",
     technologies: ["React", "Next.js", "Node.js", "MongoDB"],
+    icon: "fullstack",
   },
   {
-    number: "02",
-    title: "Frontend Development",
-    short: "Modern user interfaces",
+    title: "Responsive front ends",
     description:
-      "Creating responsive, clean and user-friendly interfaces with a strong focus on usability, accessibility and cross-browser compatibility.",
+      "Clean, responsive interfaces with attention to usability and cross-browser compatibility.",
     technologies: ["JavaScript", "React", "Next.js", "CSS3"],
+    icon: "frontend",
   },
   {
-    number: "03",
-    title: "Backend & APIs",
-    short: "Reliable backend systems",
+    title: "REST APIs and databases",
     description:
-      "Developing structured RESTful APIs with authentication, authorization, middleware and secure communication between applications.",
-    technologies: ["Node.js", "Express.js", "REST API", "JWT"],
+      "Structured REST APIs with authentication, authorization and middleware, backed by MongoDB, Mongoose or MySQL.",
+    technologies: ["Express.js", "JWT", "bcrypt", "MySQL"],
+    icon: "api",
   },
   {
-    number: "04",
-    title: "Database Integration",
-    short: "Data-driven applications",
+    title: "AI assistants",
     description:
-      "Designing and integrating databases with CRUD operations, data models and secure management of application data.",
-    technologies: ["MongoDB", "Mongoose", "MySQL", "CRUD"],
+      "Chat assistants that use an LLM with tools and memory, built to answer from your own data and stay within it.",
+    technologies: ["Gemini API", "Tool calling", "Memory", "Evals"],
+    icon: "ai",
+    featured: true,
   },
 ];
 
 export default function Expertise() {
   return (
-    <section
-      id="expertise"
-      className="relative overflow-hidden bg-black px-6 py-28 text-white"
-    >
-      {/* Background glow */}
-      <div className="pointer-events-none absolute right-0 top-1/4 h-[500px] w-[500px] rounded-full bg-white/[0.025] blur-3xl" />
-
-      <div className="relative mx-auto max-w-7xl">
-
-        {/* Section Heading */}
+    <section id="expertise" className="bg-[var(--raised)] px-6 py-24 sm:py-28">
+      <div className="mx-auto max-w-6xl">
         <Reveal>
-          <div className="mb-16 max-w-4xl">
-
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-10 bg-white/40" />
-
-              <p className="text-sm uppercase tracking-[0.3em] text-gray-500">
-                Expertise
-              </p>
-            </div>
-
-            <h2 className="text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-              Building across the{" "}
-              <span className="text-gray-500">
-                entire development stack.
-              </span>
-            </h2>
-
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-gray-400">
-              From responsive interfaces to backend systems and
-              databases, I work across different layers of a
-              digital product to turn ideas into functional
-              applications.
+          <div className="max-w-3xl">
+            <p className="text-sm font-medium uppercase tracking-widest text-[color:var(--accent)]">
+              Services
             </p>
-
+            <h2 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
+              What I can build for you.
+            </h2>
+            <p className="mt-5 text-lg leading-8 text-[color:var(--muted)]">
+              From the first screen to the database behind it, and now the assistant that answers
+              your users&rsquo; questions.
+            </p>
           </div>
         </Reveal>
 
-        {/* Expertise Grid */}
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="mt-14 grid gap-6 md:grid-cols-2">
+          {services.map((service, index) => (
+            <Reveal key={service.title}>
+              <article
+                className={`group relative h-full overflow-hidden rounded-2xl border bg-[var(--bg)] p-7 transition duration-300 motion-safe:hover:-translate-y-1 motion-reduce:transition-none sm:p-8 ${
+                  service.featured
+                    ? "border-[color:var(--accent)] shadow-lg shadow-black/30"
+                    : "border-[color:var(--line)] hover:border-[color:var(--accent)]"
+                }`}
+              >
+                {/* Soft accent glow on hover */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[var(--accent)] opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-10"
+                />
 
-          {expertise.map((item) => (
-            <Reveal key={item.number}>
-              <article className="group relative h-full overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.025] p-8 transition-all duration-500 hover:-translate-y-2 hover:border-white/25 hover:bg-white/[0.045] md:p-10">
+                <div className="relative flex items-start justify-between gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[color:var(--line)] bg-[var(--raised)] text-[color:var(--accent)]">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-6 w-6"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      {icons[service.icon]}
+                    </svg>
+                  </div>
 
-                {/* Hover glow */}
-                <div className="pointer-events-none absolute -right-24 -top-24 h-48 w-48 rounded-full bg-white/[0.04] blur-3xl transition duration-500 group-hover:bg-white/[0.08]" />
-
-                {/* Top row */}
-                <div className="relative flex items-start justify-between">
-
-                  <span className="text-sm font-medium tracking-[0.25em] text-gray-600 transition duration-300 group-hover:text-gray-400">
-                    {item.number}
-                  </span>
-
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-lg text-gray-600 transition duration-500 group-hover:border-white/25 group-hover:bg-white group-hover:text-black">
-                    ↗
-                  </span>
-
-                </div>
-
-                {/* Title */}
-                <div className="relative mt-14">
-
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-600">
-                    {item.short}
-                  </p>
-
-                  <h3 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
-                    {item.title}
-                  </h3>
-
-                </div>
-
-                {/* Description */}
-                <p className="relative mt-5 max-w-xl text-base leading-7 text-gray-400">
-                  {item.description}
-                </p>
-
-                {/* Divider */}
-                <div className="relative my-8 h-px bg-white/10" />
-
-                {/* Technologies */}
-                <div className="relative">
-                  <p className="mb-3 text-xs uppercase tracking-[0.2em] text-gray-600">
-                    Technologies
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    {item.technologies.map((technology) => (
-                      <span
-                        key={technology}
-                        className="rounded-full border border-white/10 bg-black/30 px-3.5 py-2 text-xs font-medium text-gray-400 transition duration-300 group-hover:border-white/20 group-hover:text-gray-200"
-                      >
-                        {technology}
+                  <div className="flex items-center gap-3">
+                    {service.featured && (
+                      <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-xs font-semibold text-[color:var(--accent-ink)]">
+                        New
                       </span>
-                    ))}
+                    )}
+                    <span
+                      aria-hidden="true"
+                      className="text-sm font-medium tabular-nums text-[color:var(--muted)]"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                 </div>
 
-                {/* Bottom line */}
-                <div className="absolute bottom-0 left-8 right-8 h-px origin-left scale-x-0 bg-white/30 transition duration-500 group-hover:scale-x-100 md:left-10 md:right-10" />
+                <h3 className="relative mt-6 text-2xl font-semibold tracking-tight">
+                  {service.title}
+                </h3>
+                <p className="relative mt-3 max-w-md leading-7 text-[color:var(--muted)]">
+                  {service.description}
+                </p>
 
+                <ul
+                  className="relative mt-6 flex flex-wrap gap-2"
+                  aria-label={`${service.title}: technologies`}
+                >
+                  {service.technologies.map((technology) => (
+                    <li
+                      key={technology}
+                      className="rounded-md border border-[color:var(--line)] bg-[var(--raised)] px-3 py-1.5 text-sm text-[color:var(--muted)]"
+                    >
+                      {technology}
+                    </li>
+                  ))}
+                </ul>
               </article>
             </Reveal>
           ))}
-
         </div>
 
-        {/* Bottom statement */}
         <Reveal>
-          <div className="mt-14 flex flex-col justify-between gap-6 border-t border-white/10 pt-8 sm:flex-row sm:items-center">
-
-            <p className="max-w-xl text-sm leading-6 text-gray-600">
-              Focused on building solutions that are functional,
-              maintainable and designed around real user needs.
+          <div className="mt-14 flex flex-col items-start justify-between gap-6 rounded-2xl border border-[color:var(--line)] bg-[var(--bg)] p-7 sm:flex-row sm:items-center sm:p-8">
+            <p className="max-w-md text-lg text-[color:var(--text)]">
+              Not sure what fits? Ask the assistant what I&rsquo;ve built, or tell me about your idea.
             </p>
-
-            <a
-              href="#skills"
-              className="group inline-flex items-center gap-2 text-sm font-medium text-gray-400 transition hover:text-white"
-            >
-              Explore my technical skills
-
-              <span className="transition duration-300 group-hover:translate-x-1">
-                →
-              </span>
-            </a>
-
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="#chat"
+                className={`rounded-lg border border-[color:var(--line)] px-6 py-3 text-sm font-medium transition hover:border-[color:var(--accent)] ${focus}`}
+              >
+                Ask the assistant
+              </a>
+              <a
+                href="#contact"
+                className={`rounded-lg bg-[var(--accent)] px-6 py-3 text-sm font-semibold text-[color:var(--accent-ink)] transition hover:brightness-110 ${focus}`}
+              >
+                Start a conversation
+              </a>
+            </div>
           </div>
         </Reveal>
-
       </div>
     </section>
   );

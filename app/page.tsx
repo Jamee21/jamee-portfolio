@@ -9,12 +9,13 @@ import Projects from "../components/Projects";
 import Education from "../components/Education";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import ChatWidget from "../components/ChatWidget";
 
 export default function Home() {
   return (
     <>
       <Navbar />
-
+      <ChatWidget theme="dark" />
       <main>
         <Hero />
         <About />
