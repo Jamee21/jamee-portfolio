@@ -1,6 +1,5 @@
 import Reveal from "./Reveal";
 
-/* Simple inline icons. Decorative only, so they are hidden from screen readers. */
 const icons = {
   understand: (
     <>
@@ -34,86 +33,116 @@ const steps = [
   {
     title: "Understand",
     icon: "understand",
-    description: "I start with the requirements, the goals and the problem that needs solving.",
+    description: "I start with requirements, goals and the problem that needs solving.",
+    color: "#4fd1c0",
   },
   {
     title: "Plan",
     icon: "plan",
-    description: "I break the work into clear tasks and choose the structure and technologies.",
+    description: "I break the work into clear tasks and choose the right structure and stack.",
+    color: "#818cf8",
   },
   {
     title: "Develop",
     icon: "develop",
     description: "I build the interface, backend and database with clean, maintainable code.",
+    color: "#4fd1c0",
   },
   {
     title: "Test",
     icon: "test",
     description: "I test the application, fix bugs and improve reliability and usability.",
+    color: "#818cf8",
   },
   {
     title: "Deploy",
     icon: "deploy",
-    description: "I prepare the project for release and check that everything works as expected.",
+    description: "I prepare for release and verify everything works as expected.",
+    color: "#4fd1c0",
   },
 ];
 
 export default function Process() {
   return (
-    <section id="process" className="bg-[var(--raised)] px-6 py-24 sm:py-28">
+    <section id="process" className="bg-[var(--raised)] px-4 py-20 sm:px-6 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="max-w-3xl">
             <p className="text-sm font-medium uppercase tracking-widest text-[color:var(--accent)]">
               Process
             </p>
-            <h2 className="mt-3 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              From idea to working product.
+            <h2 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              From idea to{" "}
+              <span className="gradient-text">working product.</span>
             </h2>
-            <p className="mt-5 text-lg leading-8 text-[color:var(--muted)]">
+            <p className="mt-5 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
               Five clear steps, so you always know what is happening and what comes next.
             </p>
           </div>
         </Reveal>
 
+        {/* Mobile: vertical list. md+: horizontal 5-col grid */}
         <Reveal>
-          <ol className="mt-14 grid gap-8 md:grid-cols-5 md:gap-6">
+          <ol className="mt-12 flex flex-col gap-4 md:grid md:grid-cols-5 md:gap-4">
             {steps.map((step, index) => (
               <li key={step.title} className="group relative flex flex-col">
-                {/* Step marker, with a line running to the next step on wide screens */}
-                <div className="relative flex items-center">
-                  <div className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[color:var(--accent)] bg-[var(--bg)] text-[color:var(--accent)] transition duration-300 group-hover:bg-[var(--accent)] group-hover:text-[color:var(--accent-ink)] motion-reduce:transition-none">
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {icons[step.icon]}
-                    </svg>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div
-                      aria-hidden="true"
-                      className="absolute left-12 hidden h-px bg-[var(--line)] md:block"
-                      style={{ width: "calc(100% - 3rem + 1.5rem)" }}
-                    />
-                  )}
-                </div>
 
-                {/* Card */}
-                <div className="mt-5 h-full rounded-2xl border border-[color:var(--line)] bg-[var(--bg)] p-6 transition duration-300 group-hover:border-[color:var(--accent)] motion-safe:group-hover:-translate-y-1 motion-reduce:transition-none">
-                  <p className="text-sm font-semibold text-[color:var(--accent)]">
-                    Step {index + 1}
-                  </p>
-                  <h3 className="mt-2 text-xl font-semibold tracking-tight">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-[color:var(--muted)]">
-                    {step.description}
-                  </p>
+                {/* Mobile layout: horizontal number + content row */}
+                <div className="flex gap-4 md:flex-col md:gap-0">
+
+                  {/* Circle marker */}
+                  <div className="relative flex shrink-0 flex-col items-center md:flex-row">
+                    <div
+                      className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 bg-[var(--bg)] transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg motion-reduce:transition-none"
+                      style={{ borderColor: step.color, color: step.color }}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        {icons[step.icon]}
+                      </svg>
+                    </div>
+                    {/* Vertical connector on mobile */}
+                    {index < steps.length - 1 && (
+                      <div
+                        aria-hidden="true"
+                        className="mt-1 h-full w-px bg-[var(--line)] md:hidden"
+                        style={{ minHeight: "1.5rem" }}
+                      />
+                    )}
+                    {/* Horizontal connector on desktop */}
+                    {index < steps.length - 1 && (
+                      <div
+                        aria-hidden="true"
+                        className="absolute left-11 top-5 hidden h-px bg-[var(--line)] md:block"
+                        style={{ width: "calc(100% - 2.75rem + 1rem)" }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Card */}
+                  <div
+                    className="mb-4 flex flex-1 flex-col rounded-2xl border border-[color:var(--line)] bg-[var(--card)] p-4 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-[color:var(--accent)] motion-reduce:transition-none md:mt-5 md:mb-0"
+                  >
+                    <div
+                      className="mb-2 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-[color:var(--accent-ink)]"
+                      style={{ background: step.color }}
+                    >
+                      {index + 1}
+                    </div>
+                    <h3 className="text-base font-bold tracking-tight sm:text-lg">{step.title}</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-[color:var(--muted)]">
+                      {step.description}
+                    </p>
+                  </div>
+
                 </div>
               </li>
             ))}

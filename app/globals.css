@@ -2,33 +2,42 @@
 
 /* ==========================================================================
    Design tokens
-   Every color on the site comes from here. Change one value, the whole site
-   follows. All text/background pairs below were checked for WCAG AA (4.5:1).
    ========================================================================== */
 :root {
-  /* Dark surfaces: deep sea ink */
-  --bg: #0a1220;
-  --raised: #101b2e;
-  --line: #1f2e47;
+  /* Surfaces */
+  --bg: #060d18;
+  --raised: #0c1628;
+  --card: #0f1e35;
+  --line: #1a2d48;
 
-  /* Text on dark (contrast on --bg: 16.1, 8.0, 5.1) */
-  --text: #e9eef6;
-  --muted: #9baac1;
-  --faint: #7486a1;
+  /* Text */
+  --text: #edf2fa;
+  --muted: #8fa3be;
+  --faint: #5c7390;
 
-  /* The single accent: sea glass */
-  --accent: #5ce0d0;
-  --accent-ink: #04201c; /* text on top of the accent (10.6:1) */
+  /* Accent — sea-glass teal */
+  --accent: #4fd1c0;
+  --accent-dim: #2a9e90;
+  --accent-glow: rgba(79, 209, 192, 0.18);
+  --accent-ink: #031a17;
 
-  /* Light band used by the Projects section */
+  /* Secondary accent — soft indigo for variety */
+  --indigo: #818cf8;
+  --indigo-glow: rgba(129, 140, 248, 0.15);
+
+  /* Gradient stops used in hero headline */
+  --grad-a: #4fd1c0;
+  --grad-b: #818cf8;
+
+  /* Light band */
   --paper: #e9eff6;
-  --ink: #0a1220;
-  --ink-muted: #4a5b75; /* 6.9:1 on white, 6.0:1 on paper */
-  --accent-deep: #0a6c63; /* teal for links and labels on light surfaces */
+  --ink: #060d18;
+  --ink-muted: #4a5b75;
+  --accent-deep: #0a6c63;
 
   /* Scrollbar */
-  --scroll-thumb: #26385a;
-  --scroll-thumb-hover: #35507d;
+  --scroll-thumb: #1f3356;
+  --scroll-thumb-hover: #2f4e80;
 
   color-scheme: dark;
 }
@@ -38,8 +47,8 @@
    ========================================================================== */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem; /* keeps section titles clear of the fixed navbar */
-  scrollbar-width: thin; /* Firefox */
+  scroll-padding-top: 5rem;
+  scrollbar-width: thin;
   scrollbar-color: var(--scroll-thumb) var(--bg);
 }
 
@@ -47,18 +56,30 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-body), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-body), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-h1,
-h2,
-h3 {
-  font-family: var(--font-display), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  text-wrap: balance; /* avoids a lonely last word in headings */
+/* Subtle radial-gradient page background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% -10%, rgba(79, 209, 192, 0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 10%,  rgba(129, 140, 248, 0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display), ui-sans-serif, system-ui, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  text-wrap: balance;
 }
 
 p {
@@ -70,63 +91,103 @@ p {
   color: var(--accent-ink);
 }
 
-/* Visible keyboard focus everywhere. Components can override with their own ring. */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
 /* ==========================================================================
-   Scrollbar (Chrome, Edge, Safari)
+   Scrollbar
    ========================================================================== */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb {
   background: var(--scroll-thumb);
   border-radius: 999px;
-  border: 2px solid var(--bg); /* thinner look without losing the grab area */
+  border: 2px solid var(--bg);
 }
+::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover); }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scroll-thumb-hover);
+/* ==========================================================================
+   Gradient text utility
+   ========================================================================== */
+.gradient-text {
+  background: linear-gradient(135deg, var(--grad-a) 0%, var(--grad-b) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* ==========================================================================
-   Animation helper (kept from your old file in case something still uses it)
+   Glow utilities
+   ========================================================================== */
+.glow-accent {
+  box-shadow: 0 0 32px var(--accent-glow), 0 0 64px var(--accent-glow);
+}
+
+.glow-indigo {
+  box-shadow: 0 0 32px var(--indigo-glow), 0 0 64px var(--indigo-glow);
+}
+
+/* ==========================================================================
+   Animations
    ========================================================================== */
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-up {
-  animation: fadeUp 0.6s ease-out both;
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0   rgba(79, 209, 192, 0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(79, 209, 192, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(79, 209, 192, 0); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.animate-fade-up   { animation: fadeUp    0.65s ease-out both; }
+.animate-float     { animation: float     4s ease-in-out infinite; }
+.animate-pulse-ring{ animation: pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite; }
+.animate-spin-slow { animation: spin-slow 12s linear infinite; }
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.06) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.4s linear infinite;
 }
 
 /* ==========================================================================
-   Accessibility: respect "reduce motion"
+   Section dividers
+   ========================================================================== */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--line), transparent);
+}
+
+/* ==========================================================================
+   Accessibility: reduce motion
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
