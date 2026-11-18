@@ -38,12 +38,12 @@ export default function Hero() {
               Ask my AI assistant
             </a>
             <a
-              href="/Jamee-Raza-CV.pdf"
-              download
-              className={`rounded px-3 py-3 text-[color:var(--muted)] underline underline-offset-4 transition hover:text-[color:var(--text)] ${focus}`}
-            >
-              Download Resume
-            </a>
+  href="/Jamee_Resume.pdf"
+  download="Jamee_Raza_Resume.pdf"
+  className={`rounded px-3 py-3 text-[color:var(--muted)] underline underline-offset-4 transition hover:text-[color:var(--text)] ${focus}`}
+>
+  Download Resume
+</a>
           </div>
 
           <ul className="mt-12 flex flex-wrap gap-2" aria-label="Main technologies">
