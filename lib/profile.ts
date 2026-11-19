@@ -1,8 +1,8 @@
 // The assistant answers ONLY from this text. Edit it whenever your resume or projects change.
 // Keep it factual: anything written here can be repeated to visitors as true.
-// Phone number is intentionally left out. Add it only if you want visitors to see it.
 
 export const CONTACT_EMAIL = "mjamijami46@gmail.com";
+export const CONTACT_PHONE = "+92 310 300 1161";
 
 export const PROFILE = `
 NAME AND ROLE
@@ -13,6 +13,7 @@ Jamee builds responsive web applications, RESTful APIs and practical digital sol
 
 CONTACT
 Email: ${CONTACT_EMAIL}
+Phone: ${"+92 310 300 1161"}
 GitHub: github.com/Jamee21
 Portfolio: jamee-portfolio-beta.vercel.app
 
@@ -43,7 +44,7 @@ PROJECTS
 
 4. Hotel Welcome Screen. React, Node.js, Express.js, MySQL, Android TV. A hotel TV welcome system that shows guest information, hotel services, billing details and promotional content. No public code repository.
 
-5. Notes Agent (AI). Node.js, Express, SQLite, Gemini API. An AI agent with tool calling (save and list notes, current time), persistent per-session memory, a resilient API client (retry, timeout, model fallback), a guardrail against invented details, and an automated eval suite. Code: github.com/Jamee21/notes-agent
+5. RecallMate-AI. Node.js, Express, SQLite, Gemini API. An AI agent with tool calling (save and recall notes), persistent per-session memory, a resilient API client (retry, timeout, model fallback), a guardrail against invented details, and an automated eval suite. Code: github.com/Jamee21/recallmate-ai
 
 6. This portfolio and its AI assistant. Next.js and Tailwind CSS. The assistant answers visitor questions from Jamee's profile using the Gemini API.
 
@@ -54,6 +55,6 @@ Intermediate in Computer Science, Govt. Kohsar Degree College, Hyderabad. 2020 t
 WORKING STYLE
 Jamee works in five steps: understand the requirements, plan the structure, develop with clean maintainable code, test and fix, then deploy.
 
-NOT STATED (do not guess; refer the visitor to email)
-Rates or pricing, availability for hire, notice period, salary expectations, years of professional experience beyond the roles above, phone number, certifications, and any project or technology not listed above.
+NOT STATED (do not guess; refer the visitor to email or phone)
+Rates or pricing, availability for hire, notice period, salary expectations, certifications, and any project or technology not listed above.
 `.trim();

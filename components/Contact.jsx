@@ -4,43 +4,65 @@ import { useState } from "react";
 import Reveal from "./Reveal";
 
 const CONTACT_EMAIL = "mjamijami46@gmail.com";
+const CONTACT_PHONE = "+92 310 300 1161";
+const CONTACT_PHONE_RAW = "+923103001161";
+
+const SHEET_URL =
+  "https://script.google.com/macros/s/AKfycbzPVKOB-l0Tf806ZZuCernRmaj67Mhr9Cl6aGsSmvPEwqpPdIa4nuktLXni5d4VL2-LPw/exec";
 
 const focus =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]";
 
-const infoCards = [
+/* SVG icon paths for each contact method */
+const ICONS = {
+  phone: (
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.68 11a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.27-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" />
+  ),
+  email: (
+    <>
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </>
+  ),
+  github: (
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.3c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+  ),
+  location: (
+    <>
+      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+      <circle cx="12" cy="10" r="3" />
+    </>
+  ),
+};
+
+const infoItems = [
   {
+    id: "phone",
+    label: "Phone",
+    value: CONTACT_PHONE,
+    href: `tel:${CONTACT_PHONE_RAW}`,
+    iconColor: "var(--accent)",
+  },
+  {
+    id: "email",
     label: "Email",
     value: CONTACT_EMAIL,
     href: `mailto:${CONTACT_EMAIL}`,
-    color: "var(--accent)",
-    icon: (
-      <>
-        <rect width="20" height="16" x="2" y="4" rx="2" />
-        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-      </>
-    ),
+    iconColor: "var(--accent)",
   },
   {
+    id: "github",
     label: "GitHub",
     value: "github.com/Jamee21",
     href: "https://github.com/Jamee21",
-    color: "var(--indigo)",
-    icon: (
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.3c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-    ),
+    iconColor: "var(--accent)",
   },
   {
+    id: "location",
     label: "Location",
     value: "Karachi, Pakistan",
     href: null,
-    color: "var(--accent)",
-    icon: (
-      <>
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" />
-        <circle cx="12" cy="9" r="2.5" />
-      </>
-    ),
+    iconColor: "var(--accent)",
   },
 ];
 
@@ -50,199 +72,239 @@ export default function Contact() {
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    if (status !== "sending") setStatus("idle");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const subject = encodeURIComponent(`Portfolio contact from ${form.name}`);
-    const body    = encodeURIComponent(`Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`);
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-    setStatus("sent");
-    setForm({ name: "", email: "", message: "" });
+    if (status === "sending") return;
+    setStatus("sending");
+    try {
+      await fetch(SHEET_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          message: form.message.trim(),
+        }),
+      });
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
   }
 
   return (
-    <section id="contact" className="bg-[var(--bg)] px-4 py-20 sm:px-6 sm:py-28">
+    <section id="contact" className="bg-[var(--raised)] px-4 py-20 sm:px-6 sm:py-28">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <div className="max-w-3xl">
-            <p className="text-sm font-medium uppercase tracking-widest text-[color:var(--accent)]">
-              Contact
+            <p className="font-mono text-xs text-[color:var(--faint)]">
+              <span className="text-[color:var(--accent)]">// </span>GET IN TOUCH
             </p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-              Let&rsquo;s{" "}
-              <span className="gradient-text">work together.</span>
+            <h2 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+              Contact Me
             </h2>
-            <p className="mt-5 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
-              I&rsquo;m open to junior roles, internships and freelance projects. Drop me a message
-              and I&rsquo;ll reply as soon as I can.
+            <p className="mt-4 text-base leading-7 text-[color:var(--muted)] sm:text-lg sm:leading-8">
+              Open to junior roles, internships and freelance projects. Drop a message and I&rsquo;ll reply soon.
             </p>
           </div>
         </Reveal>
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
 
-          {/* ── Info + availability ── */}
           <Reveal>
-            <div className="space-y-4">
-              {infoCards.map((card) => (
-                <div
-                  key={card.label}
-                  className="flex items-center gap-4 rounded-2xl border border-[color:var(--line)] bg-[var(--card)] p-4 transition hover:border-[color:var(--faint)] sm:p-5"
-                >
+            <div className="space-y-3">
+              <p className="text-base font-semibold text-[color:var(--text)]">Let&rsquo;s Connect</p>
+              <p className="text-sm text-[color:var(--muted)]">
+                Feel free to reach out for collaborations, opportunities, or just to say hi.
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {infoItems.map((item) => (
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border bg-[var(--raised)] sm:h-11 sm:w-11"
-                    style={{ borderColor: card.color, color: card.color }}
+                    key={item.id}
+                    className="group flex items-center gap-4 rounded-xl border border-[color:var(--line)] bg-[var(--card)] px-4 py-3.5 transition-all duration-200 hover:border-[color:var(--accent)] hover:shadow-md hover:shadow-[var(--accent-glow)]"
                   >
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="h-4 w-4 sm:h-5 sm:w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
+                    {/* Icon box */}
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[color:var(--line)] bg-[var(--raised)] transition group-hover:border-[color:var(--accent)]"
+                      style={{ color: item.iconColor }}
                     >
-                      {card.icon}
-                    </svg>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-[color:var(--faint)]">
-                      {card.label}
-                    </p>
-                    {card.href ? (
-                      <a
-                        href={card.href}
-                        target={card.href.startsWith("http") ? "_blank" : undefined}
-                        rel={card.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className={`mt-0.5 block truncate text-sm font-medium text-[color:var(--text)] transition hover:text-[color:var(--accent)] ${focus}`}
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
                       >
-                        {card.value}
-                      </a>
-                    ) : (
-                      <p className="mt-0.5 text-sm font-medium text-[color:var(--text)]">
-                        {card.value}
+                        {ICONS[item.id]}
+                      </svg>
+                    </div>
+
+                    {/* Text */}
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-[color:var(--faint)]">
+                        {item.label}
                       </p>
+                      {item.href ? (
+                        <a
+                          href={item.href}
+                          target={item.href.startsWith("http") ? "_blank" : undefined}
+                          rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                          className={`mt-0.5 block truncate text-sm font-medium text-[color:var(--text)] transition hover:text-[color:var(--accent)] ${focus}`}
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        <p className="mt-0.5 text-sm font-medium text-[color:var(--text)]">
+                          {item.value}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Arrow for clickable items */}
+                    {item.href && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4 shrink-0 text-[color:var(--faint)] transition group-hover:translate-x-0.5 group-hover:text-[color:var(--accent)]"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
                     )}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
-              {/* Availability */}
-              <div className="rounded-2xl border border-[color:var(--accent)] bg-[var(--card)] p-4 sm:p-5">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-2.5 w-2.5 shrink-0">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
-                    <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
-                  </span>
-                  <p className="text-sm font-semibold text-[color:var(--accent)]">
+              {/* Availability badge */}
+              <div className="mt-2 flex items-start gap-3 rounded-xl border border-[color:var(--accent)] bg-[var(--card)] px-4 py-4">
+                <span className="relative mt-0.5 flex h-3 w-3 shrink-0">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-70" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-[var(--accent)]" />
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-[color:var(--accent)]">
                     Available for opportunities
                   </p>
+                  <p className="mt-1 text-sm text-[color:var(--muted)]">
+                    Open to junior full-stack, front-end &amp; AI roles and internships.
+                  </p>
                 </div>
-                <p className="mt-2 text-sm text-[color:var(--muted)]">
-                  Open to junior full-stack, front-end & AI developer roles, and internships.
-                </p>
               </div>
             </div>
           </Reveal>
 
-          {/* ── Form ── */}
+          {/* Right — form */}
           <Reveal>
             <form
               onSubmit={handleSubmit}
-              className="relative overflow-hidden rounded-2xl border border-[color:var(--line)] bg-[var(--card)] p-5 sm:p-7"
+              className="relative border border-[color:var(--line)] bg-[var(--card)] p-5 sm:p-7"
             >
-              {/* Top glow line */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent"
-              />
+              <div aria-hidden="true" className="absolute inset-x-0 top-0 h-0.5 bg-[var(--accent)]" />
 
-              <h3 className="text-lg font-bold tracking-tight sm:text-xl">Send a message</h3>
-              <p className="mt-1 text-sm text-[color:var(--muted)]">
-                Opens your email client with the message pre-filled.
-              </p>
+              {/* Terminal title bar */}
+              <div className="mb-5 flex items-center gap-3 border-b border-[color:var(--line)] pb-4">
+                <div className="flex gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                </div>
+                <span className="font-mono text-xs text-[color:var(--faint)]">send_message.sh</span>
+              </div>
 
-              <div className="mt-5 space-y-4">
+              <div className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="contact-name"
-                    className="block text-sm font-medium text-[color:var(--text)]"
-                  >
-                    Name
+                  <label htmlFor="contact-name" className="mb-1.5 block font-mono text-xs text-[color:var(--accent)]">
+                    <span className="opacity-50">$ </span>name
                   </label>
                   <input
                     id="contact-name"
                     name="name"
                     type="text"
                     required
+                    maxLength={100}
                     value={form.name}
                     onChange={handleChange}
                     placeholder="Your name"
-                    className={`mt-1.5 w-full rounded-lg border border-[color:var(--line)] bg-[var(--raised)] px-3.5 py-2.5 text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] sm:px-4 sm:py-3 ${focus}`}
+                    className={`w-full border border-[color:var(--line)] bg-[var(--raised)] px-4 py-2.5 font-mono text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] outline-none ${focus}`}
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="contact-email"
-                    className="block text-sm font-medium text-[color:var(--text)]"
-                  >
-                    Your email
+                  <label htmlFor="contact-email" className="mb-1.5 block font-mono text-xs text-[color:var(--accent)]">
+                    <span className="opacity-50">$ </span>email
                   </label>
                   <input
                     id="contact-email"
                     name="email"
                     type="email"
                     required
+                    maxLength={254}
                     value={form.email}
                     onChange={handleChange}
                     placeholder="you@example.com"
-                    className={`mt-1.5 w-full rounded-lg border border-[color:var(--line)] bg-[var(--raised)] px-3.5 py-2.5 text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] sm:px-4 sm:py-3 ${focus}`}
+                    className={`w-full border border-[color:var(--line)] bg-[var(--raised)] px-4 py-2.5 font-mono text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] outline-none ${focus}`}
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="contact-message"
-                    className="block text-sm font-medium text-[color:var(--text)]"
-                  >
-                    Message
+                  <label htmlFor="contact-message" className="mb-1.5 block font-mono text-xs text-[color:var(--accent)]">
+                    <span className="opacity-50">$ </span>message
                   </label>
                   <textarea
                     id="contact-message"
                     name="message"
                     required
                     rows={5}
+                    maxLength={5000}
                     value={form.message}
                     onChange={handleChange}
                     placeholder="Tell me about your project or opportunity…"
-                    className={`mt-1.5 w-full resize-none rounded-lg border border-[color:var(--line)] bg-[var(--raised)] px-3.5 py-2.5 text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] sm:px-4 sm:py-3 ${focus}`}
+                    className={`w-full resize-none border border-[color:var(--line)] bg-[var(--raised)] px-4 py-2.5 font-mono text-sm text-[color:var(--text)] placeholder:text-[color:var(--faint)] transition focus:border-[color:var(--accent)] outline-none ${focus}`}
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className={`mt-5 w-full rounded-lg bg-[var(--accent)] py-3 text-sm font-bold text-[color:var(--accent-ink)] shadow-md shadow-[var(--accent-glow)] transition hover:brightness-110 hover:shadow-lg sm:py-3.5 ${focus}`}
+                disabled={status === "sending"}
+                className={`mt-5 w-full bg-[var(--accent)] py-3 font-mono text-sm font-bold text-[color:var(--accent-ink)] transition hover:bg-[color:var(--accent-dim)] disabled:cursor-not-allowed disabled:opacity-70 ${focus}`}
               >
-                {status === "sent" ? "✓ Message opened in email client" : "Send message →"}
+                {status === "sending" && "$ sending..."}
+                {status === "sent"    && "$ message_sent ✓"}
+                {status === "error"   && "$ error — retry"}
+                {status === "idle"    && "$ send_message →"}
               </button>
 
               {status === "sent" && (
-                <p className="mt-3 text-center text-xs text-[color:var(--muted)] sm:text-sm">
-                  Didn&rsquo;t open?{" "}
-                  <a
-                    href={`mailto:${CONTACT_EMAIL}`}
-                    className="text-[color:var(--accent)] underline underline-offset-4"
-                  >
-                    Email me directly
+                <p role="status" className="mt-3 text-center font-mono text-xs text-[color:var(--accent)]">
+                  Thank you! I&rsquo;ll get back to you soon.
+                </p>
+              )}
+
+              {status === "error" && (
+                <p role="alert" className="mt-3 text-center font-mono text-xs text-[color:var(--muted)]">
+                  Failed. Email me at{" "}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="text-[color:var(--accent)] underline">
+                    {CONTACT_EMAIL}
                   </a>
                 </p>
               )}
             </form>
           </Reveal>
+
         </div>
       </div>
     </section>
